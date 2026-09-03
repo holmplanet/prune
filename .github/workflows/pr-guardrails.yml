@@ -55,7 +55,7 @@ jobs:
         env:
           MISSING: ${{ steps.check.outputs.missing }}
         run: |
-          missing="$(python -c 'import json, os; print(", ".join(json.loads(os.environ["MISSING"]))')"
+          missing="$(python -c 'import json, os; print(", ".join(json.loads(os.environ["MISSING"])))')"
           if [ -n "$missing" ]; then
             echo "Missing meaningful protocol sections: $missing"
             exit 1
