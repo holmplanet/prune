@@ -102,6 +102,16 @@ class ProtocolSchemaTests(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Draft202012Validator(schema).validate({"status": "done"})
 
+    def test_completion_spec_enforces_response_budget(self):
+        schema = load_document(ROOT / "protocol/schemas/completion-spec.schema.json")
+        Draft202012Validator(schema).validate(
+            {"status": "complete", "response": {"verbosity": "minimal", "sentences": 1}}
+        )
+        with self.assertRaises(ValidationError):
+            Draft202012Validator(schema).validate(
+                {"status": "complete", "response": {"verbosity": "expanded", "sentences": 4}}
+            )
+
 
 class PullRequestGuardrailTests(unittest.TestCase):
     def test_complete_body_passes(self):

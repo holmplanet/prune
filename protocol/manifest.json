@@ -1,5 +1,5 @@
 {
-  "protocol_version": "1.1.0",
+  "protocol_version": "1.2.0",
   "schemas": [
     "schemas/change-spec.schema.json",
     "schemas/completion-spec.schema.json",
