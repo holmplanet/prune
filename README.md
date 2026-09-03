@@ -181,7 +181,19 @@ generated adapters, and runs `git diff --check`.
 The separate PR guardrail workflow runs on pull request edits and enforces the required review
 contract.
 
+## Contributing
+
+Contributions are welcome. Keep `protocol/` as the canonical source of truth and regenerate both
+adapters when canonical files change. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the development
+checks and pull request expectations.
+
+Report security vulnerabilities privately. See [`SECURITY.md`](SECURITY.md).
+
+## License
+
+Secure Agent Protocol is available under the [MIT License](LICENSE).
+
 ## Status
 
-The protocol is an active private prototype. Codex and Claude adapters are implemented. Pi remains
-reserved for future work.
+The protocol is an experimental open-source project. Codex and Claude adapters are implemented. Pi
+remains reserved for future work.
