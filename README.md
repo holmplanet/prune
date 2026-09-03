@@ -68,7 +68,7 @@ The protocol defines workflows for:
 - `tests/` — schema, guardrail, adapter, packaging, and hook conformance tests.
 - `.github/workflows/` — repository CI and PR guardrails.
 
-The manifest currently declares protocol version `1.1.0`.
+The manifest currently declares protocol version `1.2.0`.
 
 ## Adapters
 
