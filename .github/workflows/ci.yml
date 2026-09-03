@@ -1,0 +1,38 @@
+name: Protocol CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install --requirement requirements-dev.txt
+
+      - name: Run protocol tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Verify generated adapter
+        run: python scripts/build_codex_adapter.py --check
+
+      - name: Check diff whitespace
+        run: git diff --check
