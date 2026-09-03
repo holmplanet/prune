@@ -1,6 +1,6 @@
 {
   "name": "secure-agent-protocol",
-  "version": "0.1.0",
+  "version": "0.1.0+codex.20260903123835",
   "description": "Secure Agent Protocol plugin",
   "author": {
     "name": "Local developer"
