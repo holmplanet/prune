@@ -1,5 +1,5 @@
 {
-  "protocol_version": "1.0.0",
+  "protocol_version": "1.1.0",
   "schemas": [
     "schemas/change-spec.schema.json",
     "schemas/completion-spec.schema.json",
@@ -10,7 +10,8 @@
     "policies/SECURITY.md",
     "policies/ABSTRACTION.md",
     "policies/MINIMAL-CODE.md",
+    "policies/CODE-QUALITY.md",
     "policies/COMPLETION.md"
   ],
-  "modes": ["modes/bugfix.md"]
+  "modes": ["modes/bugfix.md", "modes/feature.md", "modes/review.md"]
 }

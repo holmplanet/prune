@@ -32,6 +32,16 @@ abstraction:
   reason: Existing validation is sufficient
 implementation:
   smallest_secure_design: Invalidate the token before retrying
+  behavior_contract:
+    - An expired refresh token is rejected and cannot create a new session
+  invariants:
+    - A rejected token remains unusable after the failure
+  edge_cases:
+    - Concurrent reuse of the same expired token
+  side_effects:
+    - Invalidate the refresh-token record
+  compatibility_constraints:
+    - Preserve the existing session-expiration response contract
 verification:
   security_checks:
     - expired-token replay test

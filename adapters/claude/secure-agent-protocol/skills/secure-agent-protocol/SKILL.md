@@ -2,12 +2,12 @@
 name: secure-agent-protocol
 description: "Apply the Secure Agent Protocol to Claude Code work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 <!-- GENERATED FILE. Edit protocol/ and run scripts/build_claude_adapter.py. -->
 
-Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include `objective`, `scope`, `security`, `structure`, `abstraction`, `implementation`, `verification`. Do not print a long plan unless asked.
+Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include `objective`, `scope`, `security`, `structure`, `abstraction`, `implementation`, `verification`. Complete the implementation quality fields when they apply to the task. Do not print a long plan unless asked.
 
 ```yaml
 change:
@@ -33,6 +33,11 @@ change:
     reason:
   implementation:
     smallest_secure_design:
+    behavior_contract: []
+    invariants: []
+    edge_cases: []
+    side_effects: []
+    compatibility_constraints: []
   verification:
     security_checks: []
     tests: []
@@ -91,6 +96,32 @@ Before adding code, check in this order:
 
 Do not add a dependency, wrapper, configuration layer, abstraction, compatibility path, or future-facing extension without a demonstrated requirement. Never remove meaningful validation, error handling, tests, accessibility, or security controls merely to reduce line count.
 
+# Code Quality Policy
+
+Code should be easy to understand, test, change, and remove. These are review heuristics,
+not absolute rules; security, correctness, and the repository's established conventions take
+precedence.
+
+- Use names that communicate intent and use the same vocabulary for the same concept.
+- Keep functions and modules focused on one responsibility and one level of abstraction.
+- Prefer explicit control flow, inputs, outputs, and failure behavior over clever shortcuts.
+- Keep side effects at clear boundaries and avoid hidden mutation or shared state.
+- Prefer high cohesion and low coupling; do not extract a generic abstraction without a second
+  credible use.
+- Avoid flags or options that make one function perform unrelated behaviors; split the behavior
+  when the boundary is real.
+- Remove duplication when a stable domain abstraction exists, but tolerate local duplication
+  when an abstraction would couple unrelated domains.
+- Treat comments as explanations of intent, constraints, or non-obvious decisions. Do not use
+  comments to excuse unclear code.
+- Use explicit error types or the repository's established error contract. Preserve useful
+  context without exposing secrets.
+- Tests should be fast, independent, repeatable, and self-validating. Test observable behavior,
+  failure paths, and important boundaries rather than implementation trivia.
+
+Do not optimize for line count, perceived cleverness, or arbitrary coverage targets. A small
+change is good when it is complete, understandable, and verifiable.
+
 # Completion Policy
 
 Every task ends with one primary status:
@@ -125,6 +156,38 @@ Use only the fields that apply. Keep the default handoff to two or three sentenc
 7. Return a concise completion status.
 
 Do not mix unrelated cleanup, broad refactors, new dependencies, or public API changes into a focused bug fix unless the ChangeSpec requires them.
+
+# Feature Mode
+
+Use for adding or materially changing product behavior.
+
+1. Define the observable behavior and acceptance conditions before editing.
+2. Identify domain invariants, important edge cases, side effects, and compatibility constraints.
+3. Locate the owning module, schema, existing abstraction, and established test pattern.
+4. Choose names, boundaries, and interfaces that make the behavior easy to understand.
+5. Write focused tests for the contract and important failure paths when practical.
+6. Implement the smallest complete change with explicit error behavior.
+7. Review the diff for unclear responsibilities, hidden mutation, duplication, dead code,
+   speculative abstractions, and scope drift.
+8. Run applicable tests, type checks, lint, formatting, and security checks.
+
+Do not add unrelated cleanup, broad refactors, new dependencies, or compatibility layers unless
+the behavior contract requires them.
+
+# Review Mode
+
+Use for evaluating existing or agent-written code without assuming it is correct because it
+compiles or has tests.
+
+1. Establish the intended behavior, trust boundaries, and compatibility constraints.
+2. Trace the changed code from inputs through side effects to outputs and failures.
+3. Check security controls, authorization, validation, error handling, and sensitive-data paths.
+4. Check names, responsibility boundaries, abstraction levels, coupling, duplication, and hidden
+   mutation.
+5. Check tests for observable behavior, negative paths, boundaries, independence, and repeatability.
+6. Run the repository's applicable checks and inspect the complete diff.
+7. Report findings by severity with file locations, impact, and a concrete fix or verification
+   needed. Do not rewrite code unless requested.
 
 ## Verification gate
 

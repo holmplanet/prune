@@ -57,6 +57,11 @@
       "additionalProperties": false,
       "properties": {
         "smallest_secure_design": { "type": "string", "minLength": 1 },
+        "behavior_contract": { "type": "array", "items": { "type": "string" } },
+        "invariants": { "type": "array", "items": { "type": "string" } },
+        "edge_cases": { "type": "array", "items": { "type": "string" } },
+        "side_effects": { "type": "array", "items": { "type": "string" } },
+        "compatibility_constraints": { "type": "array", "items": { "type": "string" } },
         "forbidden_complexity": { "type": "array", "items": { "type": "string" } }
       }
     },
