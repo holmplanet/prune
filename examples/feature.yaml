@@ -1,0 +1,75 @@
+objective: Add idempotent webhook ingestion for billing events
+scope:
+  allowed_files:
+    - src/webhooks/billing.ts
+    - src/webhooks/billing.schema.ts
+    - src/webhooks/billing.test.ts
+    - src/events/event-store.ts
+  forbidden_changes:
+    - provider migration
+    - unrelated event types
+    - new dependencies
+security:
+  trust_boundaries:
+    - billing provider to webhook endpoint
+  untrusted_inputs:
+    - raw request body
+    - signature header
+    - event payload
+  sensitive_data:
+    - billing event payloads
+    - customer identifiers
+  authorization_rules:
+    - only verified provider events may enter the event store
+  abuse_cases:
+    - replay of a valid event
+    - malformed or oversized payload
+    - invalid signature
+  failure_behavior: Reject invalid events and return a retryable response when persistence fails
+structure:
+  existing_patterns:
+    - request validation at the HTTP boundary
+    - transactional event persistence
+  reusable_modules:
+    - provider signature verifier
+    - event store
+  proposed_interfaces:
+    - verifyBillingEvent(rawBody, signature)
+    - recordEventIfNew(eventId, payload)
+  schema_changes:
+    - require a unique provider event ID
+abstraction:
+  stable_concept: verified idempotent event ingestion
+  existing_abstraction_to_extend: request validation and event store
+  new_abstraction_justified: false
+  reason: Existing boundary and persistence abstractions cover the feature
+implementation:
+  smallest_secure_design: Verify the raw body before parsing, validate the event schema, and atomically record each provider event ID once
+  behavior_contract:
+    - A valid event is processed once
+    - An invalid signature is rejected before payload handling
+    - A duplicate event returns the existing idempotent result
+  invariants:
+    - Unverified payloads are never persisted
+    - A provider event ID is processed at most once
+  edge_cases:
+    - Duplicate delivery during concurrent requests
+    - Missing signature header
+    - Invalid JSON after a valid signature
+    - Persistence failure after validation
+  side_effects:
+    - Persist a verified event record
+    - Enqueue one downstream billing action
+  compatibility_constraints:
+    - Preserve the provider retry response contract
+    - Preserve existing event-store transaction boundaries
+verification:
+  security_checks:
+    - invalid and missing signature tests
+    - oversized payload rejection
+    - concurrent duplicate-delivery test
+  tests:
+    - npm test -- src/webhooks/billing.test.ts
+    - npm test
+  type_check: npm run type-check
+  lint: npm run lint
