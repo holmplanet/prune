@@ -46,7 +46,7 @@ metadata:
 
 <!-- GENERATED FILE. Edit protocol/ and run scripts/build_codex_adapter.py. -->
 
-Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include {required}. Do not print a long plan unless asked.
+Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include {required}. Complete the implementation quality fields when they apply to the task. Do not print a long plan unless asked.
 
 ```yaml
 change:
@@ -72,6 +72,11 @@ change:
     reason:
   implementation:
     smallest_secure_design:
+    behavior_contract: []
+    invariants: []
+    edge_cases: []
+    side_effects: []
+    compatibility_constraints: []
   verification:
     security_checks: []
     tests: []

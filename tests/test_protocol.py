@@ -29,6 +29,21 @@ class ProtocolSchemaTests(unittest.TestCase):
             ROOT / "protocol/schemas/change-spec.schema.json",
         )
 
+    def test_change_spec_accepts_implementation_quality_fields(self):
+        change = load_document(ROOT / "examples/bugfix.yaml")
+        implementation = change["implementation"]
+        self.assertEqual(
+            set(implementation),
+            {
+                "smallest_secure_design",
+                "behavior_contract",
+                "invariants",
+                "edge_cases",
+                "side_effects",
+                "compatibility_constraints",
+            },
+        )
+
     def test_change_spec_rejects_unknown_fields(self):
         change = {
             "objective": "test",
@@ -114,6 +129,10 @@ class AdapterConformanceTests(unittest.TestCase):
         self.assertIn("## Modes", adapter)
         self.assertIn("# Bugfix Mode", adapter)
         self.assertIn("Add a regression test when practical.", adapter)
+        self.assertIn("# Feature Mode", adapter)
+        self.assertIn("# Review Mode", adapter)
+        self.assertIn("# Code Quality Policy", adapter)
+        self.assertIn("Complete the implementation quality fields when they apply", adapter)
         manifest = load_document(ROOT / "protocol/manifest.json")
         self.assertIn(f"version: {manifest['protocol_version']}", adapter)
 
@@ -139,6 +158,10 @@ class AdapterConformanceTests(unittest.TestCase):
         self.assertIn("## Modes", adapter)
         self.assertIn("# Bugfix Mode", adapter)
         self.assertIn("Add a regression test when practical.", adapter)
+        self.assertIn("# Feature Mode", adapter)
+        self.assertIn("# Review Mode", adapter)
+        self.assertIn("# Code Quality Policy", adapter)
+        self.assertIn("Complete the implementation quality fields when they apply", adapter)
         manifest = load_document(ROOT / "protocol/manifest.json")
         self.assertIn(f"version: {manifest['protocol_version']}", adapter)
 
