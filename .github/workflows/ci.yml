@@ -31,6 +31,9 @@ jobs:
       - name: Run protocol tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
 
+      - name: Validate protocol examples
+        run: python scripts/validate_protocol.py examples/bugfix.yaml --schema protocol/schemas/change-spec.schema.json
+
       - name: Verify generated adapter
         run: python scripts/build_codex_adapter.py --check
 
