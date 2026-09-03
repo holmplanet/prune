@@ -7,7 +7,7 @@ metadata:
 
 <!-- GENERATED FILE. Edit protocol/ and run scripts/build_codex_adapter.py. -->
 
-Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include `objective`, `scope`, `structure`, `implementation`, `verification`. Do not print a long plan unless asked.
+Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include `objective`, `scope`, `security`, `structure`, `abstraction`, `implementation`, `verification`. Do not print a long plan unless asked.
 
 ```yaml
 change:

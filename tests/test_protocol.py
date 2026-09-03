@@ -21,8 +21,13 @@ def validate(instance, schema, path="$"):
         "object": isinstance(instance, dict),
         "array": isinstance(instance, list),
         "string": isinstance(instance, str),
+        "null": instance is None,
+        "boolean": isinstance(instance, bool),
     }
-    if expected in type_matches and not type_matches[expected]:
+    if isinstance(expected, list):
+        if not any(type_matches.get(candidate, False) for candidate in expected):
+            raise AssertionError(f"{path}: expected one of {expected}")
+    elif expected in type_matches and not type_matches[expected]:
         raise AssertionError(f"{path}: expected {expected}")
 
     if "enum" in schema and instance not in schema["enum"]:
@@ -67,6 +72,22 @@ class ProtocolSchemaTests(unittest.TestCase):
             "implementation": {"smallest_secure_design": "test"},
             "verification": {"tests": []},
             "unexpected": True,
+        }
+        with self.assertRaises(AssertionError):
+            validate(change, load_document("protocol/schemas/change-spec.schema.json"))
+
+    def test_change_spec_requires_security_and_abstraction(self):
+        change = {
+            "objective": "test",
+            "scope": {"allowed_files": [], "forbidden_changes": []},
+            "structure": {
+                "existing_patterns": [],
+                "reusable_modules": [],
+                "proposed_interfaces": [],
+                "schema_changes": [],
+            },
+            "implementation": {"smallest_secure_design": "test"},
+            "verification": {"tests": []},
         }
         with self.assertRaises(AssertionError):
             validate(change, load_document("protocol/schemas/change-spec.schema.json"))
