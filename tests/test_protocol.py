@@ -12,6 +12,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ProtocolSchemaTests(unittest.TestCase):
+    def test_manifest_matches_schema_and_declares_existing_files(self):
+        manifest = load_document(ROOT / "protocol/manifest.json")
+        validate_document(
+            ROOT / "protocol/manifest.json",
+            ROOT / "protocol/schemas/manifest.schema.json",
+        )
+        for relative_path in manifest["schemas"] + manifest["policies"] + manifest["modes"]:
+            self.assertTrue((ROOT / "protocol" / relative_path).is_file(), relative_path)
+
     def test_example_bugfix_matches_change_spec_schema(self):
         validate_document(
             ROOT / "examples/bugfix.yaml",
@@ -100,6 +109,8 @@ class AdapterConformanceTests(unittest.TestCase):
         self.assertIn("Codex adapter boundary", adapter)
         self.assertIn("# Priority Order", adapter)
         self.assertIn("1. Security", adapter)
+        manifest = load_document(ROOT / "protocol/manifest.json")
+        self.assertIn(f"version: {manifest['protocol_version']}", adapter)
 
 
 if __name__ == "__main__":

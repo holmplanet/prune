@@ -34,6 +34,9 @@ jobs:
       - name: Validate protocol examples
         run: python scripts/validate_protocol.py examples/bugfix.yaml --schema protocol/schemas/change-spec.schema.json
 
+      - name: Validate protocol manifest
+        run: python scripts/validate_protocol.py protocol/manifest.json --schema protocol/schemas/manifest.schema.json
+
       - name: Verify generated adapter
         run: python scripts/build_codex_adapter.py --check
 
