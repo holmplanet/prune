@@ -1,0 +1,62 @@
+name: PR Guardrails
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  protocol:
+    name: Secure Agent Protocol
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the base branch checker
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Check PR sections
+        id: check
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          missing="$(printf '%s' "$PR_BODY" | python scripts/check_pr_body.py)"
+          echo "missing=$missing" >> "$GITHUB_OUTPUT"
+
+      - name: Update protocol comment
+        uses: actions/github-script@v7
+        env:
+          MISSING: ${{ steps.check.outputs.missing }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = '<!-- secure-agent-protocol:pr-guardrails -->';
+            const missing = JSON.parse(process.env.MISSING || '[]');
+            const passed = missing.length === 0;
+            const status = passed ? '✅ Protocol sections complete' : '❌ Protocol sections incomplete';
+            const details = passed
+              ? 'The PR includes the required contract for scope, security, design, implementation, and verification.'
+              : `Add meaningful content to: ${missing.map((section) => `\`${section}\``).join(', ')}.`;
+            const body = `${marker}\n## Secure Agent Protocol\n\n${status}\n\n${details}\n\nThis check validates structure only; repository tests and security checks remain separate CI responsibilities.`;
+            const { owner, repo } = context.repo;
+            const issue = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: issue, per_page: 100 });
+            const existing = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number: issue, body });
+            }
+
+      - name: Enforce required sections
+        env:
+          MISSING: ${{ steps.check.outputs.missing }}
+        run: |
+          missing="$(python -c 'import json, os; print(", ".join(json.loads(os.environ["MISSING"]))')"
+          if [ -n "$missing" ]; then
+            echo "Missing meaningful protocol sections: $missing"
+            exit 1
+          fi
