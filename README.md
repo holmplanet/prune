@@ -24,3 +24,61 @@ The first adopter is Codex. Pi is a later adapter. Neither owns the source of tr
 ## Status
 
 Early design and protocol prototype. The repository is private while the workflow is validated on real coding tasks.
+
+## What changes in a PR
+
+The protocol makes the work behind a PR explicit before implementation. For example, a request to add a webhook endpoint might look like this without the protocol:
+
+```text
+Add POST /webhooks/stripe.
+
+- Added a route and controller.
+- Parsed the request body and saved the event.
+- Updated the README.
+```
+
+The same PR using the protocol would narrow the scope, identify the trust boundary, and make failure behavior and verification visible. It also follows a review shape that works well in practice: explain the reachable defect, justify the abstraction, state what is deliberately out of scope, and show evidence that the tests catch the regression:
+
+```text
+fix(webhooks): reject duplicate Stripe events instead of processing them twice
+
+ChangeSpec
+- Objective: accept verified Stripe events exactly once.
+- Allowed files: webhook route, event schema, event store, focused tests.
+- Trust boundary: raw HTTP request and Stripe signature header are untrusted.
+- Security: verify the signature against the raw body; reject missing or invalid
+  signatures; never log the signing secret or raw sensitive payload.
+- Structure: extend the existing request-validation and event-store abstractions;
+  do not add a generic webhook framework.
+- Invariants: an event ID is processed at most once; persistence failure returns
+  a retryable error without acknowledging the event.
+- Verification: valid, invalid, expired, duplicate, malformed, and persistence-
+  failure cases; formatter, type check, lint, and full test suite.
+
+The defect
+- The event store previously used a last-write-wins map keyed by event ID.
+- Duplicate source records were silently collapsed, then reported as success.
+- This is reachable because the upstream export does not enforce uniqueness.
+
+Implementation
+- Added the route, schema validation, signature verification, and idempotency
+  check at the boundary.
+- Reused the existing request-validation abstraction and added one narrow
+  indexById helper because the route and replay path both need the invariant.
+- Kept provider-specific behavior in the Stripe adapter.
+
+Verification
+- Tests: 9 passed, including duplicate and invalid-signature regressions.
+- Checks: formatter, type check, lint, and security scan passed.
+- Mutation check: removing the duplicate guard fails the two new regression tests.
+
+Not in scope
+- Provider migration, unrelated event types, and changes to delivery retries.
+
+COMPLETE
+Fixed duplicate Stripe event handling in [files].
+Cause: last-write-wins indexing silently collapsed repeated event IDs.
+Verified: focused tests and repository checks above.
+```
+
+The second example is not just a longer description: it records the contract that reviewers need to evaluate security, correctness, scope, and completion.

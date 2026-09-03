@@ -8,6 +8,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator, ValidationError
 
 from scripts.validate_protocol import load_document, validate_document
+from scripts.check_pr_body import REQUIRED_SECTIONS, missing_sections
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,6 +89,20 @@ class ProtocolSchemaTests(unittest.TestCase):
         schema = load_document(ROOT / "protocol/schemas/completion-spec.schema.json")
         with self.assertRaises(ValidationError):
             Draft202012Validator(schema).validate({"status": "done"})
+
+
+class PullRequestGuardrailTests(unittest.TestCase):
+    def test_complete_body_passes(self):
+        body = "\n".join(f"## {section}\nEvidence for {section}." for section in REQUIRED_SECTIONS)
+        self.assertEqual(missing_sections(body), [])
+
+    def test_template_comments_do_not_count_as_content(self):
+        body = "\n".join(f"## {section}\n<!-- guidance -->" for section in REQUIRED_SECTIONS)
+        self.assertEqual(missing_sections(body), list(REQUIRED_SECTIONS))
+
+    def test_code_fence_headings_do_not_satisfy_sections(self):
+        body = "```\n" + "\n".join(f"## {section}" for section in REQUIRED_SECTIONS) + "\n```"
+        self.assertEqual(missing_sections(body), list(REQUIRED_SECTIONS))
 
 
 class AdapterConformanceTests(unittest.TestCase):
