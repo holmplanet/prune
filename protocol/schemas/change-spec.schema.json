@@ -3,7 +3,7 @@
   "$id": "https://secure-agent-protocol.local/schemas/change-spec.schema.json",
   "title": "ChangeSpec",
   "type": "object",
-  "required": ["objective", "scope", "structure", "implementation", "verification"],
+  "required": ["objective", "scope", "security", "structure", "abstraction", "implementation", "verification"],
   "additionalProperties": false,
   "properties": {
     "objective": { "type": "string", "minLength": 1 },
@@ -18,6 +18,7 @@
     },
     "security": {
       "type": "object",
+      "required": ["trust_boundaries", "untrusted_inputs", "sensitive_data", "authorization_rules", "failure_behavior"],
       "additionalProperties": false,
       "properties": {
         "trust_boundaries": { "type": "array", "items": { "type": "string" } },
@@ -37,6 +38,17 @@
         "reusable_modules": { "type": "array", "items": { "type": "string" } },
         "proposed_interfaces": { "type": "array", "items": { "type": "string" } },
         "schema_changes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "abstraction": {
+      "type": "object",
+      "required": ["stable_concept", "existing_abstraction_to_extend", "new_abstraction_justified", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "stable_concept": { "type": ["string", "null"] },
+        "existing_abstraction_to_extend": { "type": ["string", "null"] },
+        "new_abstraction_justified": { "type": "boolean" },
+        "reason": { "type": ["string", "null"] }
       }
     },
     "implementation": {

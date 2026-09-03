@@ -25,6 +25,11 @@ structure:
     - token validation helper
   proposed_interfaces: []
   schema_changes: []
+abstraction:
+  stable_concept: token validation
+  existing_abstraction_to_extend: token validation helper
+  new_abstraction_justified: false
+  reason: Existing validation is sufficient
 implementation:
   smallest_secure_design: Invalidate the token before retrying
 verification:

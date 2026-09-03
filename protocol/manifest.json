@@ -1,0 +1,16 @@
+{
+  "protocol_version": "1.0.0",
+  "schemas": [
+    "schemas/change-spec.schema.json",
+    "schemas/completion-spec.schema.json",
+    "schemas/manifest.schema.json"
+  ],
+  "policies": [
+    "policies/PRIORITY.md",
+    "policies/SECURITY.md",
+    "policies/ABSTRACTION.md",
+    "policies/MINIMAL-CODE.md",
+    "policies/COMPLETION.md"
+  ],
+  "modes": ["modes/bugfix.md"]
+}

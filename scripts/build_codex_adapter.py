@@ -12,17 +12,13 @@ ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "protocol"
 OUTPUT = ROOT / "adapters/codex/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md"
 
-POLICIES = [
-    "PRIORITY.md",
-    "SECURITY.md",
-    "ABSTRACTION.md",
-    "MINIMAL-CODE.md",
-    "COMPLETION.md",
-]
+
+def manifest() -> dict:
+    return json.loads((PROTOCOL / "manifest.json").read_text(encoding="utf-8"))
 
 
-def read_policy(name: str) -> str:
-    return (PROTOCOL / "policies" / name).read_text(encoding="utf-8").strip()
+def read_protocol_file(path: str) -> str:
+    return (PROTOCOL / path).read_text(encoding="utf-8").strip()
 
 
 def change_spec_fields() -> list[str]:
@@ -33,13 +29,19 @@ def change_spec_fields() -> list[str]:
 
 
 def render() -> str:
-    policies = "\n\n".join(read_policy(name) for name in POLICIES)
+    protocol_manifest = manifest()
+    policies = "\n\n".join(
+        read_protocol_file(path) for path in protocol_manifest["policies"]
+    )
+    modes = "\n\n".join(
+        read_protocol_file(path) for path in protocol_manifest["modes"]
+    )
     required = ", ".join(f"`{field}`" for field in change_spec_fields())
     return f'''---
 name: secure-agent-protocol
 description: "Apply the Secure Agent Protocol to Codex coding work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
 metadata:
-  version: 1.0.0
+  version: {protocol_manifest["protocol_version"]}
 ---
 
 <!-- GENERATED FILE. Edit protocol/ and run scripts/build_codex_adapter.py. -->
@@ -78,6 +80,10 @@ change:
 ```
 
 {policies}
+
+## Modes
+
+{modes}
 
 ## Verification gate
 
