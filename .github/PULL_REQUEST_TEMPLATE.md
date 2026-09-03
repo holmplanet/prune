@@ -1,3 +1,5 @@
+<!-- Keep sentences short and factual. Prefer bullets. Use tables only when they materially improve comprehension. -->
+
 ## Objective
 
 <!-- What user, system, or repository behavior is changing? -->

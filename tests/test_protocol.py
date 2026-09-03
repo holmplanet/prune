@@ -24,6 +24,10 @@ class ProtocolSchemaTests(unittest.TestCase):
         for relative_path in manifest["schemas"] + manifest["policies"] + manifest["modes"]:
             self.assertTrue((ROOT / "protocol" / relative_path).is_file(), relative_path)
 
+    def test_manifest_declares_pr_communication_policy(self):
+        manifest = load_document(ROOT / "protocol/manifest.json")
+        self.assertIn("policies/PR-COMMUNICATION.md", manifest["policies"])
+
     def test_example_bugfix_matches_change_spec_schema(self):
         validate_document(
             ROOT / "examples/bugfix.yaml",
@@ -147,6 +151,8 @@ class AdapterConformanceTests(unittest.TestCase):
         self.assertIn("# Feature Mode", adapter)
         self.assertIn("# Review Mode", adapter)
         self.assertIn("# Code Quality Policy", adapter)
+        self.assertIn("# PR Communication Policy", adapter)
+        self.assertIn("Tables are opt-in", adapter)
         self.assertIn("Complete the implementation quality fields when they apply", adapter)
         manifest = load_document(ROOT / "protocol/manifest.json")
         self.assertIn(f"version: {manifest['protocol_version']}", adapter)
@@ -176,6 +182,8 @@ class AdapterConformanceTests(unittest.TestCase):
         self.assertIn("# Feature Mode", adapter)
         self.assertIn("# Review Mode", adapter)
         self.assertIn("# Code Quality Policy", adapter)
+        self.assertIn("# PR Communication Policy", adapter)
+        self.assertIn("Tables are opt-in", adapter)
         self.assertIn("Complete the implementation quality fields when they apply", adapter)
         manifest = load_document(ROOT / "protocol/manifest.json")
         self.assertIn(f"version: {manifest['protocol_version']}", adapter)

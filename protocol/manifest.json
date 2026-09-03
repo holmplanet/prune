@@ -11,6 +11,7 @@
     "policies/ABSTRACTION.md",
     "policies/MINIMAL-CODE.md",
     "policies/CODE-QUALITY.md",
+    "policies/PR-COMMUNICATION.md",
     "policies/COMPLETION.md"
   ],
   "modes": ["modes/bugfix.md", "modes/feature.md", "modes/review.md"]

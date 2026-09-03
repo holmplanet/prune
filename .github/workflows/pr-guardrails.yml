@@ -40,7 +40,7 @@ jobs:
             const details = passed
               ? 'The PR includes the required contract for scope, security, design, implementation, and verification.'
               : `Add meaningful content to: ${missing.map((section) => `\`${section}\``).join(', ')}.`;
-            const body = `${marker}\n## Secure Agent Protocol\n\n${status}\n\n${details}\n\nThis check validates structure only; repository tests and security checks remain separate CI responsibilities.`;
+            const body = `${marker}\n## Secure Agent Protocol\n\n${status}\n\n${details}\n\nChecks structure only. CI owns tests and security checks.`;
             const { owner, repo } = context.repo;
             const issue = context.issue.number;
             const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: issue, per_page: 100 });
