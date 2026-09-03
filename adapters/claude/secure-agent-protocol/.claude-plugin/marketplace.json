@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "secure-agent-protocol",
+  "description": "Harness-agnostic protocol for secure, schema-first, clean AI-assisted software work.",
+  "owner": {
+    "name": "holmplanet",
+    "url": "https://github.com/holmplanet"
+  },
+  "plugins": [
+    {
+      "name": "secure-agent-protocol",
+      "description": "Security first, schema and structure before implementation, minimal secure code, concise handoff.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

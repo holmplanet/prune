@@ -37,8 +37,11 @@ jobs:
       - name: Validate protocol manifest
         run: python scripts/validate_protocol.py protocol/manifest.json --schema protocol/schemas/manifest.schema.json
 
-      - name: Verify generated adapter
+      - name: Verify generated Codex adapter
         run: python scripts/build_codex_adapter.py --check
+
+      - name: Verify generated Claude adapter
+        run: python scripts/build_claude_adapter.py --check
 
       - name: Check diff whitespace
         run: git diff --check

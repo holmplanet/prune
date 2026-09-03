@@ -1,3 +1,5 @@
+import json
+import os
 import subprocess
 import sys
 import unittest
@@ -114,6 +116,98 @@ class AdapterConformanceTests(unittest.TestCase):
         self.assertIn("Add a regression test when practical.", adapter)
         manifest = load_document(ROOT / "protocol/manifest.json")
         self.assertIn(f"version: {manifest['protocol_version']}", adapter)
+
+    def test_claude_adapter_is_generated_and_current(self):
+        result = subprocess.run(
+            [sys.executable, "scripts/build_claude_adapter.py", "--check"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
+    def test_claude_adapter_declares_protocol_boundary(self):
+        adapter = (
+            ROOT
+            / "adapters/claude/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("GENERATED FILE", adapter)
+        self.assertIn("Claude adapter boundary", adapter)
+        self.assertIn("# Priority Order", adapter)
+        self.assertIn("1. Security", adapter)
+        self.assertIn("## Modes", adapter)
+        self.assertIn("# Bugfix Mode", adapter)
+        self.assertIn("Add a regression test when practical.", adapter)
+        manifest = load_document(ROOT / "protocol/manifest.json")
+        self.assertIn(f"version: {manifest['protocol_version']}", adapter)
+
+
+class ClaudePluginPackagingTests(unittest.TestCase):
+    """The Claude adapter is a local plugin, so its manifests are part of the contract."""
+
+    PLUGIN = ROOT / "adapters/claude/secure-agent-protocol"
+
+    def test_plugin_manifest_points_at_an_existing_hooks_file(self):
+        plugin = load_document(self.PLUGIN / ".claude-plugin/plugin.json")
+        self.assertEqual(plugin["name"], "secure-agent-protocol")
+        hooks_relative = plugin["hooks"].lstrip("./")
+        self.assertTrue((self.PLUGIN / hooks_relative).is_file(), plugin["hooks"])
+
+    def test_marketplace_manifest_declares_the_plugin(self):
+        marketplace = load_document(self.PLUGIN / ".claude-plugin/marketplace.json")
+        names = [entry["name"] for entry in marketplace["plugins"]]
+        self.assertIn("secure-agent-protocol", names)
+
+    def test_hooks_register_session_start_against_an_existing_script(self):
+        hooks = load_document(self.PLUGIN / "hooks/claude-hooks.json")["hooks"]
+        self.assertIn("SessionStart", hooks)
+        commands = [
+            hook["command"]
+            for event in hooks.values()
+            for entry in event
+            for hook in entry["hooks"]
+        ]
+        self.assertTrue(commands)
+        for command in commands:
+            # Every hook command must reference a script that actually ships in the plugin;
+            # a typo here fails silently at session start, where nobody is watching.
+            self.assertIn("${CLAUDE_PLUGIN_ROOT}", command)
+            script = command.split("${CLAUDE_PLUGIN_ROOT}/")[1].rstrip('"')
+            self.assertTrue((self.PLUGIN / script).is_file(), script)
+
+    def test_session_start_hook_emits_the_protocol_as_additional_context(self):
+        result = subprocess.run(
+            ["node", "hooks/session-start.js"],
+            cwd=self.PLUGIN,
+            input='{"hook_event_name":"SessionStart"}',
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        context = payload["hookSpecificOutput"]["additionalContext"]
+        self.assertEqual(payload["hookSpecificOutput"]["hookEventName"], "SessionStart")
+        # Frontmatter is parsed by Claude Code separately; injecting it would be noise.
+        self.assertFalse(context.startswith("---"))
+        self.assertIn("# Priority Order", context)
+        self.assertIn("Claude adapter boundary", context)
+
+    def test_session_start_hook_fails_open_when_the_skill_is_missing(self):
+        # A broken protocol file must not make Claude Code unusable: a non-zero exit would
+        # surface as a hook error on every session start.
+        result = subprocess.run(
+            ["node", "hooks/session-start.js"],
+            cwd=self.PLUGIN,
+            input="{}",
+            capture_output=True,
+            text=True,
+            check=False,
+            env={**os.environ, "CLAUDE_PLUGIN_ROOT": str(ROOT / "tests/does-not-exist")},
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), {})
 
 
 if __name__ == "__main__":
