@@ -1,6 +1,6 @@
 {
   "name": "prune",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Security-first agent protocol: security -> correctness -> structure -> reuse -> minimal implementation -> concise handoff. Schema-first ChangeSpec before editing; verification gate before claiming completion.",
   "author": {
     "name": "holmplanet",
