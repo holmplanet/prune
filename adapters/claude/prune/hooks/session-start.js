@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Secure Agent Protocol — Claude Code SessionStart / SubagentStart hook.
+// Prune Protocol — Claude Code SessionStart / SubagentStart hook.
 //
 // Emits the generated protocol skill as hidden session context, so the protocol governs every
 // session without relying on the model electing to invoke the skill.
@@ -20,7 +20,7 @@ const path = require('path');
 // `CLAUDE_PLUGIN_ROOT` is set by Claude Code when it runs a plugin hook. The `..` fallback keeps
 // the hook runnable directly (e.g. `node hooks/session-start.js`) for local testing.
 const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || path.resolve(__dirname, '..');
-const skillPath = path.join(pluginRoot, 'skills', 'secure-agent-protocol', 'SKILL.md');
+const skillPath = path.join(pluginRoot, 'skills', 'prune', 'SKILL.md');
 
 /** Strips the YAML frontmatter block that Claude Code parses separately from the skill body. */
 function stripFrontmatter(text) {
@@ -64,7 +64,7 @@ function main() {
 
   process.stdout.write(
     JSON.stringify({
-      systemMessage: 'SECURE AGENT PROTOCOL ACTIVE',
+      systemMessage: 'PRUNE ACTIVE',
       hookSpecificOutput: {
         hookEventName: readEventName(),
         additionalContext: body,

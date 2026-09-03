@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "protocol"
-OUTPUT = ROOT / "adapters/claude/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md"
+OUTPUT = ROOT / "adapters/claude/prune/skills/prune/SKILL.md"
 
 
 def manifest() -> dict:
@@ -38,8 +38,8 @@ def render() -> str:
     )
     required = ", ".join(f"`{field}`" for field in change_spec_fields())
     return f'''---
-name: secure-agent-protocol
-description: "Apply the Secure Agent Protocol to Claude Code work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
+name: prune
+description: "Apply the Prune Protocol to Claude Code work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
 metadata:
   version: {protocol_manifest["protocol_version"]}
 ---
@@ -100,7 +100,7 @@ This file is generated from `protocol/`. Keep Claude-specific packaging here, bu
 
 The Claude Code adapter ships this file two ways, from this one source:
 
-- as a **skill**, auto-discovered at `skills/secure-agent-protocol/SKILL.md`, so the protocol can be invoked by name; and
+- as a **skill**, auto-discovered at `skills/prune/SKILL.md`, so the protocol can be invoked by name; and
 - as **always-on session context**, via the `SessionStart` hook in `hooks/claude-hooks.json`, which reads this same file at runtime and emits its body as `additionalContext`.
 
 The hook reads this file rather than carrying its own copy of the protocol, so there is exactly one generated artifact and no second source of truth.

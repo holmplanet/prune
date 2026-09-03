@@ -1,4 +1,4 @@
-# Secure Agent Protocol
+# Prune Protocol
 
 A harness-agnostic protocol for secure, schema-first, clean AI-assisted software work.
 
@@ -71,29 +71,29 @@ The manifest currently declares protocol version `1.1.0`.
 ### Codex
 
 The Codex adapter is the first adopter. It packages the generated protocol skill as an installable
-Codex plugin at `adapters/codex/secure-agent-protocol/`.
+Codex plugin at `adapters/codex/prune/`.
 
 The generated skill lives at:
 
 ```text
-adapters/codex/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md
+adapters/codex/prune/skills/prune/SKILL.md
 ```
 
 It is generated from `protocol/` and must not be hand-edited.
 
 ### Claude Code
 
-The Claude adapter is a local Claude Code plugin at `adapters/claude/secure-agent-protocol/`.
+The Claude adapter is a local Claude Code plugin at `adapters/claude/prune/`.
 Install it from a local marketplace:
 
 ```text
-/plugin marketplace add /absolute/path/to/secure-agent-protocol/adapters/claude/secure-agent-protocol
-/plugin install secure-agent-protocol
+/plugin marketplace add /absolute/path/to/prune/adapters/claude/prune
+/plugin install prune
 ```
 
 The generated skill reaches Claude in two ways:
 
-1. It is auto-discovered as `skills/secure-agent-protocol/SKILL.md`.
+1. It is auto-discovered as `skills/prune/SKILL.md`.
 2. The `SessionStart` and `SubagentStart` hooks read the same file and inject it as session context.
 
 The hook fails open with `{}` if the skill is missing or unreadable, so a broken protocol file does
@@ -101,7 +101,7 @@ not make Claude Code unusable. To test the hook directly:
 
 ```bash
 echo '{"hook_event_name":"SessionStart"}' \
-  | node adapters/claude/secure-agent-protocol/hooks/session-start.js
+  | node adapters/claude/prune/hooks/session-start.js
 ```
 
 ### Pi
@@ -191,7 +191,7 @@ Report security vulnerabilities privately. See [`SECURITY.md`](SECURITY.md).
 
 ## License
 
-Secure Agent Protocol is available under the [MIT License](LICENSE).
+Prune Protocol is available under the [MIT License](LICENSE).
 
 ## Status
 

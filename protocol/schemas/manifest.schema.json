@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secure-agent-protocol.local/schemas/manifest.schema.json",
+  "$id": "https://prune.local/schemas/manifest.schema.json",
   "title": "ProtocolManifest",
   "type": "object",
   "required": ["protocol_version", "schemas", "policies", "modes"],

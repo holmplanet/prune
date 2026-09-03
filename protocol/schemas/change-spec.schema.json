@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secure-agent-protocol.local/schemas/change-spec.schema.json",
+  "$id": "https://prune.local/schemas/change-spec.schema.json",
   "title": "ChangeSpec",
   "type": "object",
   "required": ["objective", "scope", "security", "structure", "abstraction", "implementation", "verification"],

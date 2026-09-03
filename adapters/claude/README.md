@@ -28,7 +28,7 @@ Hook commands resolve `${CLAUDE_PLUGIN_ROOT}`, and a hook communicates by writin
 
 ## How this adapter is wired
 
-One generated artifact — `skills/secure-agent-protocol/SKILL.md` — reaches Claude two ways:
+One generated artifact — `skills/prune/SKILL.md` — reaches Claude two ways:
 
 1. **As a skill.** Auto-discovered, so the protocol is invocable by name.
 2. **As always-on session context.** `hooks/claude-hooks.json` registers `session-start.js` on
@@ -54,16 +54,16 @@ python scripts/build_claude_adapter.py --check   # fail if stale (CI gate)
 ## Install locally
 
 ```bash
-/plugin marketplace add /absolute/path/to/secure-agent-protocol/adapters/claude/secure-agent-protocol
-/plugin install secure-agent-protocol
+/plugin marketplace add /absolute/path/to/prune/adapters/claude/prune
+/plugin install prune
 ```
 
 Then restart the session (or `/clear`) so `SessionStart` fires. `systemMessage` should report
-`SECURE AGENT PROTOCOL ACTIVE`.
+`PRUNE ACTIVE`.
 
 To verify the hook in isolation, without Claude Code:
 
 ```bash
 echo '{"hook_event_name":"SessionStart"}' \
-  | node adapters/claude/secure-agent-protocol/hooks/session-start.js
+  | node adapters/claude/prune/hooks/session-start.js
 ```

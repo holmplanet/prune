@@ -139,7 +139,7 @@ class AdapterConformanceTests(unittest.TestCase):
     def test_codex_adapter_declares_protocol_boundary(self):
         adapter = (
             ROOT
-            / "adapters/codex/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md"
+            / "adapters/codex/prune/skills/prune/SKILL.md"
         ).read_text(encoding="utf-8")
         self.assertIn("GENERATED FILE", adapter)
         self.assertIn("Codex adapter boundary", adapter)
@@ -170,7 +170,7 @@ class AdapterConformanceTests(unittest.TestCase):
     def test_claude_adapter_declares_protocol_boundary(self):
         adapter = (
             ROOT
-            / "adapters/claude/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md"
+            / "adapters/claude/prune/skills/prune/SKILL.md"
         ).read_text(encoding="utf-8")
         self.assertIn("GENERATED FILE", adapter)
         self.assertIn("Claude adapter boundary", adapter)
@@ -192,18 +192,18 @@ class AdapterConformanceTests(unittest.TestCase):
 class ClaudePluginPackagingTests(unittest.TestCase):
     """The Claude adapter is a local plugin, so its manifests are part of the contract."""
 
-    PLUGIN = ROOT / "adapters/claude/secure-agent-protocol"
+    PLUGIN = ROOT / "adapters/claude/prune"
 
     def test_plugin_manifest_points_at_an_existing_hooks_file(self):
         plugin = load_document(self.PLUGIN / ".claude-plugin/plugin.json")
-        self.assertEqual(plugin["name"], "secure-agent-protocol")
+        self.assertEqual(plugin["name"], "prune")
         hooks_relative = plugin["hooks"].lstrip("./")
         self.assertTrue((self.PLUGIN / hooks_relative).is_file(), plugin["hooks"])
 
     def test_marketplace_manifest_declares_the_plugin(self):
         marketplace = load_document(self.PLUGIN / ".claude-plugin/marketplace.json")
         names = [entry["name"] for entry in marketplace["plugins"]]
-        self.assertIn("secure-agent-protocol", names)
+        self.assertIn("prune", names)
 
     def test_hooks_register_session_start_against_an_existing_script(self):
         hooks = load_document(self.PLUGIN / "hooks/claude-hooks.json")["hooks"]

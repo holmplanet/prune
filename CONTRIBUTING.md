@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to Secure Agent Protocol.
+Thanks for contributing to Prune Protocol.
 
 ## Before opening an issue or pull request
 

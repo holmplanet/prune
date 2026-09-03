@@ -1,0 +1,19 @@
+{
+  "name": "prune",
+  "version": "0.1.0+codex.20260903173619",
+  "description": "Prune Protocol plugin",
+  "author": {
+    "name": "Holmplanet",
+    "url": "https://github.com/holmplanet"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Prune Protocol",
+    "shortDescription": "Use Prune Protocol in Codex.",
+    "longDescription": "Prune Protocol adds a local Codex plugin scaffold.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Help me use Prune Protocol."
+  }
+}

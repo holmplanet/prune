@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "protocol"
-OUTPUT = ROOT / "adapters/codex/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md"
+OUTPUT = ROOT / "adapters/codex/prune/skills/prune/SKILL.md"
 
 
 def manifest() -> dict:
@@ -38,8 +38,8 @@ def render() -> str:
     )
     required = ", ".join(f"`{field}`" for field in change_spec_fields())
     return f'''---
-name: secure-agent-protocol
-description: "Apply the Secure Agent Protocol to Codex coding work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
+name: prune
+description: "Apply the Prune Protocol to Codex coding work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
 metadata:
   version: {protocol_manifest["protocol_version"]}
 ---

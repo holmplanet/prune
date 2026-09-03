@@ -1,11 +1,11 @@
 ---
-name: secure-agent-protocol
-description: "Apply the Secure Agent Protocol to Codex coding work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
+name: prune
+description: "Apply the Prune Protocol to Claude Code work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
 metadata:
   version: 1.1.0
 ---
 
-<!-- GENERATED FILE. Edit protocol/ and run scripts/build_codex_adapter.py. -->
+<!-- GENERATED FILE. Edit protocol/ and run scripts/build_claude_adapter.py. -->
 
 Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include `objective`, `scope`, `security`, `structure`, `abstraction`, `implementation`, `verification`. Complete the implementation quality fields when they apply to the task. Do not print a long plan unless asked.
 
@@ -214,6 +214,13 @@ compiles or has tests.
 
 Inspect the full diff. Check for scope drift, duplicate logic, dead code, accidental API changes, secrets, unsafe logging, and weakened security. Run applicable formatting, lint, type, test, and security checks. Do not claim completion when required verification failed.
 
-## Codex adapter boundary
+## Claude adapter boundary
 
-This file is generated from `protocol/`. Keep Codex-specific packaging here, but edit canonical behavior only under `protocol/`.
+This file is generated from `protocol/`. Keep Claude-specific packaging here, but edit canonical behavior only under `protocol/`.
+
+The Claude Code adapter ships this file two ways, from this one source:
+
+- as a **skill**, auto-discovered at `skills/prune/SKILL.md`, so the protocol can be invoked by name; and
+- as **always-on session context**, via the `SessionStart` hook in `hooks/claude-hooks.json`, which reads this same file at runtime and emits its body as `additionalContext`.
+
+The hook reads this file rather than carrying its own copy of the protocol, so there is exactly one generated artifact and no second source of truth.

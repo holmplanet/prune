@@ -9,4 +9,4 @@ python3 scripts/build_codex_adapter.py
 python3 scripts/build_codex_adapter.py --check
 ```
 
-Do not hand-edit the generated `skills/secure-agent-protocol/SKILL.md`.
+Do not hand-edit the generated `skills/prune/SKILL.md`.
