@@ -1,6 +1,6 @@
 {
   "name": "secure-agent-protocol",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Security-first agent protocol: security -> correctness -> structure -> reuse -> minimal implementation -> concise handoff. Schema-first ChangeSpec before editing; verification gate before claiming completion.",
   "author": {
     "name": "holmplanet",
