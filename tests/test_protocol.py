@@ -34,6 +34,14 @@ class ProtocolSchemaTests(unittest.TestCase):
             ROOT / "protocol/schemas/change-spec.schema.json",
         )
 
+    def test_all_examples_match_change_spec_schema(self):
+        schema = ROOT / "protocol/schemas/change-spec.schema.json"
+        examples = sorted((ROOT / "examples").glob("*.yaml"))
+        self.assertGreaterEqual(len(examples), 3)
+        for example in examples:
+            with self.subTest(example=example.name):
+                validate_document(example, schema)
+
     def test_change_spec_accepts_implementation_quality_fields(self):
         change = load_document(ROOT / "examples/bugfix.yaml")
         implementation = change["implementation"]

@@ -26,7 +26,11 @@ Before editing, an agent forms a compact ChangeSpec. The JSON Schema requires th
 - Implementation, including the smallest secure design, behavior contract, invariants, edge cases, side effects, and compatibility constraints.
 - Verification, including security checks, tests, type checking, and linting.
 
-The example at [`examples/bugfix.yaml`](examples/bugfix.yaml) is a valid ChangeSpec instance.
+The examples at [`examples/`](examples/) are valid ChangeSpec instances:
+
+- `bugfix.yaml` — expired refresh-token reuse.
+- `feature.yaml` — verified, idempotent billing webhook ingestion.
+- `review.yaml` — file-upload security review before release.
 
 ### Policies
 

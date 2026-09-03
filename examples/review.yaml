@@ -1,0 +1,75 @@
+objective: Review a file-upload endpoint for path traversal and resource exhaustion before release
+scope:
+  allowed_files:
+    - src/uploads/upload-route.ts
+    - src/uploads/storage.ts
+    - src/uploads/upload-route.test.ts
+  forbidden_changes:
+    - implementation changes during the review
+    - storage-provider migration
+    - unrelated authentication refactors
+security:
+  trust_boundaries:
+    - browser to upload API
+    - upload API to storage provider
+  untrusted_inputs:
+    - filename
+    - content type
+    - file bytes
+    - declared file size
+  sensitive_data:
+    - uploaded documents
+    - workspace identifiers
+  authorization_rules:
+    - a user may upload only to an authorized workspace
+    - storage keys must not be controlled directly by the client
+  abuse_cases:
+    - path traversal through a crafted filename
+    - oversized upload causing resource exhaustion
+    - symlink or object-key collision
+    - content-type spoofing
+  failure_behavior: Report findings with severity and reproduction evidence; do not approve unresolved boundary failures
+structure:
+  existing_patterns:
+    - authenticated route middleware
+    - storage adapter boundary
+    - focused endpoint tests
+  reusable_modules:
+    - workspace authorization helper
+    - storage-key normalizer
+  proposed_interfaces: []
+  schema_changes: []
+abstraction:
+  stable_concept: upload boundary security
+  existing_abstraction_to_extend: authenticated route and storage adapter
+  new_abstraction_justified: false
+  reason: The review should evaluate existing boundaries before proposing new abstractions
+implementation:
+  smallest_secure_design: Trace the endpoint from request parsing through authorization, validation, storage, and error handling without changing code
+  behavior_contract:
+    - Only authorized users can create uploads in a workspace
+    - Client-controlled names cannot escape the workspace storage boundary
+    - Size and content constraints are enforced before expensive processing
+  invariants:
+    - Every stored object has a server-generated or normalized key
+    - Rejected uploads do not leave partial storage objects
+  edge_cases:
+    - Encoded traversal sequences
+    - Empty or missing filename
+    - Content length mismatch
+    - Interrupted upload cleanup
+  side_effects:
+    - None; this is a review-only ChangeSpec
+  compatibility_constraints:
+    - Do not change the upload API during review
+    - Preserve existing storage-provider behavior in any later fix
+verification:
+  security_checks:
+    - inspect authorization before storage access
+    - test traversal, size, content-type, and cleanup failures
+    - confirm sensitive values are absent from logs and errors
+  tests:
+    - npm test -- src/uploads/upload-route.test.ts
+    - npm test
+  type_check: npm run type-check
+  lint: npm run lint
