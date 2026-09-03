@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secure-agent-protocol.local/schemas/change-spec.schema.json",
+  "title": "ChangeSpec",
+  "type": "object",
+  "required": ["objective", "scope", "structure", "implementation", "verification"],
+  "additionalProperties": false,
+  "properties": {
+    "objective": { "type": "string", "minLength": 1 },
+    "scope": {
+      "type": "object",
+      "required": ["allowed_files", "forbidden_changes"],
+      "additionalProperties": false,
+      "properties": {
+        "allowed_files": { "type": "array", "items": { "type": "string" } },
+        "forbidden_changes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trust_boundaries": { "type": "array", "items": { "type": "string" } },
+        "untrusted_inputs": { "type": "array", "items": { "type": "string" } },
+        "sensitive_data": { "type": "array", "items": { "type": "string" } },
+        "authorization_rules": { "type": "array", "items": { "type": "string" } },
+        "abuse_cases": { "type": "array", "items": { "type": "string" } },
+        "failure_behavior": { "type": "string" }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "required": ["existing_patterns", "reusable_modules", "proposed_interfaces", "schema_changes"],
+      "additionalProperties": false,
+      "properties": {
+        "existing_patterns": { "type": "array", "items": { "type": "string" } },
+        "reusable_modules": { "type": "array", "items": { "type": "string" } },
+        "proposed_interfaces": { "type": "array", "items": { "type": "string" } },
+        "schema_changes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "required": ["smallest_secure_design"],
+      "additionalProperties": false,
+      "properties": {
+        "smallest_secure_design": { "type": "string", "minLength": 1 },
+        "forbidden_complexity": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["tests"],
+      "additionalProperties": false,
+      "properties": {
+        "security_checks": { "type": "array", "items": { "type": "string" } },
+        "tests": { "type": "array", "items": { "type": "string" } },
+        "type_check": { "type": "string" },
+        "lint": { "type": "string" }
+      }
+    }
+  }
+}

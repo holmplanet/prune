@@ -1,0 +1,34 @@
+objective: Fix expired refresh-token reuse
+scope:
+  allowed_files:
+    - src/auth/session.ts
+    - src/auth/session.test.ts
+  forbidden_changes:
+    - unrelated refactors
+    - new dependencies
+security:
+  trust_boundaries:
+    - browser to auth service
+  untrusted_inputs:
+    - refresh token
+  sensitive_data:
+    - access tokens
+  authorization_rules:
+    - expired tokens must not be reused
+  abuse_cases:
+    - replay of an expired token
+  failure_behavior: Reject and require a new session
+structure:
+  existing_patterns:
+    - src/auth/token.ts
+  reusable_modules:
+    - token validation helper
+  proposed_interfaces: []
+  schema_changes: []
+implementation:
+  smallest_secure_design: Invalidate the token before retrying
+verification:
+  security_checks:
+    - expired-token replay test
+  tests:
+    - npm test
