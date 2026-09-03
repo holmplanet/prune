@@ -37,10 +37,10 @@ Add POST /webhooks/stripe.
 - Updated the README.
 ```
 
-The same PR using the protocol would narrow the scope, identify the trust boundary, and make failure behavior and verification visible:
+The same PR using the protocol would narrow the scope, identify the trust boundary, and make failure behavior and verification visible. It also follows a review shape that works well in practice: explain the reachable defect, justify the abstraction, state what is deliberately out of scope, and show evidence that the tests catch the regression:
 
 ```text
-Add POST /webhooks/stripe with replay protection.
+fix(webhooks): reject duplicate Stripe events instead of processing them twice
 
 ChangeSpec
 - Objective: accept verified Stripe events exactly once.
@@ -55,18 +55,29 @@ ChangeSpec
 - Verification: valid, invalid, expired, duplicate, malformed, and persistence-
   failure cases; formatter, type check, lint, and full test suite.
 
+The defect
+- The event store previously used a last-write-wins map keyed by event ID.
+- Duplicate source records were silently collapsed, then reported as success.
+- This is reachable because the upstream export does not enforce uniqueness.
+
 Implementation
 - Added the route, schema validation, signature verification, and idempotency
   check at the boundary.
+- Reused the existing request-validation abstraction and added one narrow
+  indexById helper because the route and replay path both need the invariant.
 - Kept provider-specific behavior in the Stripe adapter.
 
 Verification
 - Tests: 9 passed, including duplicate and invalid-signature regressions.
 - Checks: formatter, type check, lint, and security scan passed.
+- Mutation check: removing the duplicate guard fails the two new regression tests.
+
+Not in scope
+- Provider migration, unrelated event types, and changes to delivery retries.
 
 COMPLETE
-Fixed Stripe webhook intake in [files].
-Cause: the endpoint previously had no authenticated or idempotent boundary.
+Fixed duplicate Stripe event handling in [files].
+Cause: last-write-wins indexing silently collapsed repeated event IDs.
 Verified: focused tests and repository checks above.
 ```
 
