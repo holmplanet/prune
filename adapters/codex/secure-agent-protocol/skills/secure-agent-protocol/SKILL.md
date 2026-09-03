@@ -5,13 +5,9 @@ metadata:
   version: 1.0.0
 ---
 
-Apply the Secure Agent Protocol in this order:
+<!-- GENERATED FILE. Edit protocol/ and run scripts/build_codex_adapter.py. -->
 
-```text
-security -> correctness -> structure -> reuse -> minimal implementation -> concise handoff
-```
-
-Before editing, inspect the repository and form a compact ChangeSpec. Do not print a long plan unless asked.
+Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include `objective`, `scope`, `structure`, `implementation`, `verification`. Do not print a long plan unless asked.
 
 ```yaml
 change:
@@ -44,40 +40,68 @@ change:
     lint:
 ```
 
-## Security
+# Priority Order
 
-- Treat external input as untrusted and validate it at the boundary.
-- Enforce authorization near the protected operation.
+Apply these priorities in order:
+
+1. Security
+2. Correctness
+3. Clear structure
+4. Reusable abstractions
+5. Minimal implementation
+6. Concise communication
+
+Less code is valuable only when it preserves security, correctness, clarity, and behavior. The goal is reduced accidental surface area, not code golf.
+
+# Security-First Policy
+
+For work involving users, permissions, authentication, authorization, network calls, files, commands, secrets, payments, personal data, or external input:
+
+- Identify trust boundaries and treat external input as untrusted.
+- Validate at the boundary using the existing schema pattern.
+- Enforce authorization server-side near the protected operation.
 - Never expose secrets or sensitive data in logs, errors, URLs, client bundles, or fixtures.
 - Fail closed when identity, authorization, validation, or required dependencies are unavailable.
-- Do not widen permissions, redirects, filesystem scope, command scope, or network access without explicit need.
+- Avoid widening permissions, redirects, filesystem scope, command scope, or network access without explicit need.
+- Add regression tests for security-sensitive behavior when practical.
 
-## Structure and abstraction
+# Abstraction Policy
 
-- Find the canonical schema, type, interface, service, and source of truth before adding another.
-- Reuse an existing abstraction first.
-- Extend an abstraction only when the behavior belongs to the same concept and boundary.
-- Extract stable repeated domain or security concepts; keep one-off behavior local.
-- Reject speculative generic frameworks and catch-all helpers.
-- Keep focused bug fixes focused.
+Think in reusable concepts, not reusable-looking code.
 
-## Minimal implementation
+1. Reuse an existing abstraction.
+2. Extend it when the new behavior belongs to the same concept and boundary.
+3. Extract a genuinely repeated domain or security concept.
+4. Keep one-off behavior local and explicit.
+5. Reject speculative generic frameworks.
 
-Check in this order before adding code:
+An abstraction needs a clear name, narrow responsibility, stable inputs and outputs, and more than one credible use in the current project. Centralize security rules, domain invariants, normalization, and repeated integration behavior.
+
+# Minimal-Code Policy
+
+Before adding code, check in this order:
 
 1. Does this need to exist?
-2. Can existing repository code solve it?
-3. Can the standard library, platform, framework, or installed dependency solve it?
-4. Can a smaller clear abstraction solve it?
-5. Write the minimum secure implementation that remains readable and verifiable.
+2. Can the repository's existing code solve it?
+3. Can the standard library solve it?
+4. Can the platform or framework solve it?
+5. Can an installed dependency solve it?
+6. Can a smaller clear abstraction solve it?
+7. Write the minimum secure implementation that remains readable and verifiable.
 
-Less code is not a reason to remove meaningful validation, error handling, tests, accessibility, or security controls.
+Do not add a dependency, wrapper, configuration layer, abstraction, compatibility path, or future-facing extension without a demonstrated requirement. Never remove meaningful validation, error handling, tests, accessibility, or security controls merely to reduce line count.
 
-## Verification and handoff
+# Completion Policy
 
-Inspect the full diff. Check for scope drift, duplicate logic, dead code, accidental API changes, secrets, unsafe logging, and weakened security. Run applicable formatting, lint, type, test, and security checks; never claim completion when required verification failed.
+Every task ends with one primary status:
 
-End with one status:
+- `COMPLETE`
+- `BLOCKED`
+- `QUESTION`
+- `REVIEW`
+- `ERROR`
+
+Default completion:
 
 ```text
 COMPLETE
@@ -86,4 +110,12 @@ Cause: [cause].
 Verified: [checks].
 ```
 
-Use `BLOCKED`, `QUESTION`, `REVIEW`, or `ERROR` when appropriate. Keep the default handoff to two or three sentences. Expand only when asked.
+Use only the fields that apply. Keep the default handoff to two or three sentences. Expand only when the user asks for explanation, architecture, review detail, or an audit.
+
+## Verification gate
+
+Inspect the full diff. Check for scope drift, duplicate logic, dead code, accidental API changes, secrets, unsafe logging, and weakened security. Run applicable formatting, lint, type, test, and security checks. Do not claim completion when required verification failed.
+
+## Codex adapter boundary
+
+This file is generated from `protocol/`. Keep Codex-specific packaging here, but edit canonical behavior only under `protocol/`.

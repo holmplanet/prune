@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Generate the Codex adapter skill from the canonical protocol files."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+PROTOCOL = ROOT / "protocol"
+OUTPUT = ROOT / "adapters/codex/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md"
+
+POLICIES = [
+    "PRIORITY.md",
+    "SECURITY.md",
+    "ABSTRACTION.md",
+    "MINIMAL-CODE.md",
+    "COMPLETION.md",
+]
+
+
+def read_policy(name: str) -> str:
+    return (PROTOCOL / "policies" / name).read_text(encoding="utf-8").strip()
+
+
+def change_spec_fields() -> list[str]:
+    schema = json.loads(
+        (PROTOCOL / "schemas/change-spec.schema.json").read_text(encoding="utf-8")
+    )
+    return schema["required"]
+
+
+def render() -> str:
+    policies = "\n\n".join(read_policy(name) for name in POLICIES)
+    required = ", ".join(f"`{field}`" for field in change_spec_fields())
+    return f'''---
+name: secure-agent-protocol
+description: "Apply the Secure Agent Protocol to Codex coding work: security first, schema and structure before implementation, reusable abstractions, minimal secure code, and concise fixed-format handoffs. Use when coding, debugging, refactoring, reviewing, or auditing a repository."
+metadata:
+  version: 1.0.0
+---
+
+<!-- GENERATED FILE. Edit protocol/ and run scripts/build_codex_adapter.py. -->
+
+Apply the canonical protocol below. Before editing, inspect the repository and form a compact ChangeSpec. The ChangeSpec must include {required}. Do not print a long plan unless asked.
+
+```yaml
+change:
+  objective:
+  scope:
+    allowed_files: []
+    forbidden_changes: []
+  security:
+    trust_boundaries: []
+    untrusted_inputs: []
+    sensitive_data: []
+    authorization_rules: []
+    failure_behavior:
+  structure:
+    existing_patterns: []
+    reusable_modules: []
+    proposed_interfaces: []
+    schema_changes: []
+  abstraction:
+    stable_concept:
+    existing_abstraction_to_extend:
+    new_abstraction_justified: false
+    reason:
+  implementation:
+    smallest_secure_design:
+  verification:
+    security_checks: []
+    tests: []
+    type_check:
+    lint:
+```
+
+{policies}
+
+## Verification gate
+
+Inspect the full diff. Check for scope drift, duplicate logic, dead code, accidental API changes, secrets, unsafe logging, and weakened security. Run applicable formatting, lint, type, test, and security checks. Do not claim completion when required verification failed.
+
+## Codex adapter boundary
+
+This file is generated from `protocol/`. Keep Codex-specific packaging here, but edit canonical behavior only under `protocol/`.
+'''
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true", help="fail if output is stale")
+    args = parser.parse_args()
+
+    rendered = render()
+    if args.check:
+        current = OUTPUT.read_text(encoding="utf-8") if OUTPUT.exists() else ""
+        if current != rendered:
+            raise SystemExit(f"stale generated adapter: {OUTPUT}")
+        print(f"Codex adapter is up to date: {OUTPUT}")
+        return
+
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT.write_text(rendered, encoding="utf-8")
+    print(f"Generated: {OUTPUT}")
+
+
+if __name__ == "__main__":
+    main()
