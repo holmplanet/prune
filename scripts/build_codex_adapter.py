@@ -12,11 +12,12 @@ ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "protocol"
 OUTPUT = ROOT / "adapters/codex/secure-agent-protocol/skills/secure-agent-protocol/SKILL.md"
 
+
 def manifest() -> dict:
     return json.loads((PROTOCOL / "manifest.json").read_text(encoding="utf-8"))
 
 
-def read_policy(path: str) -> str:
+def read_protocol_file(path: str) -> str:
     return (PROTOCOL / path).read_text(encoding="utf-8").strip()
 
 
@@ -29,7 +30,12 @@ def change_spec_fields() -> list[str]:
 
 def render() -> str:
     protocol_manifest = manifest()
-    policies = "\n\n".join(read_policy(path) for path in protocol_manifest["policies"])
+    policies = "\n\n".join(
+        read_protocol_file(path) for path in protocol_manifest["policies"]
+    )
+    modes = "\n\n".join(
+        read_protocol_file(path) for path in protocol_manifest["modes"]
+    )
     required = ", ".join(f"`{field}`" for field in change_spec_fields())
     return f'''---
 name: secure-agent-protocol
@@ -74,6 +80,10 @@ change:
 ```
 
 {policies}
+
+## Modes
+
+{modes}
 
 ## Verification gate
 

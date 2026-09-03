@@ -112,6 +112,20 @@ Verified: [checks].
 
 Use only the fields that apply. Keep the default handoff to two or three sentences. Expand only when the user asks for explanation, architecture, review detail, or an audit.
 
+## Modes
+
+# Bugfix Mode
+
+1. Reproduce or identify the failing behavior.
+2. Define the smallest secure ChangeSpec.
+3. Locate the owning module, schema, and existing test pattern.
+4. Add a regression test when practical.
+5. Make the narrowest complete change.
+6. Inspect the full diff and run applicable checks.
+7. Return a concise completion status.
+
+Do not mix unrelated cleanup, broad refactors, new dependencies, or public API changes into a focused bug fix unless the ChangeSpec requires them.
+
 ## Verification gate
 
 Inspect the full diff. Check for scope drift, duplicate logic, dead code, accidental API changes, secrets, unsafe logging, and weakened security. Run applicable formatting, lint, type, test, and security checks. Do not claim completion when required verification failed.

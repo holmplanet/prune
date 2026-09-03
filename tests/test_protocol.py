@@ -109,6 +109,9 @@ class AdapterConformanceTests(unittest.TestCase):
         self.assertIn("Codex adapter boundary", adapter)
         self.assertIn("# Priority Order", adapter)
         self.assertIn("1. Security", adapter)
+        self.assertIn("## Modes", adapter)
+        self.assertIn("# Bugfix Mode", adapter)
+        self.assertIn("Add a regression test when practical.", adapter)
         manifest = load_document(ROOT / "protocol/manifest.json")
         self.assertIn(f"version: {manifest['protocol_version']}", adapter)
 
