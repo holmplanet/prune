@@ -145,6 +145,14 @@ Tables are opt-in:
 
 Keep the PR surface smaller than the internal ChangeSpec. Publish the conclusions a reviewer needs, not every planning field.
 
+## Shell-safe transport
+
+Treat PR bodies, review comments, commit messages, and other Markdown passed to a shell as data.
+
+- Never place Markdown containing backticks, `$()` expressions, or other shell metacharacters inside a double-quoted command argument.
+- Prefer a temporary body file with `--body-file`, a quoted heredoc, or stdin when sending multiline Markdown to GitHub or another external tool.
+- Before executing a command, inspect interpolated arguments for accidental command substitution and secret exposure.
+
 # Completion Policy
 
 Every task ends with one primary status:
