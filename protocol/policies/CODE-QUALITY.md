@@ -15,7 +15,9 @@ precedence.
 - Remove duplication when a stable domain abstraction exists, but tolerate local duplication
   when an abstraction would couple unrelated domains.
 - Treat comments as explanations of intent, constraints, or non-obvious decisions. Do not use
-  comments to excuse unclear code.
+  comments to excuse unclear code. Two lines is the budget: state the non-obvious why once,
+  then stop. Reasoning that needs more belongs in the pull request body or the ticket —
+  writing it in both places is the error, not the length on its own.
 - Use explicit error types or the repository's established error contract. Preserve useful
   context without exposing secrets.
 - Tests should be fast, independent, repeatable, and self-validating. Test observable behavior,
