@@ -114,7 +114,9 @@ def main() -> None:
         return
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(rendered, encoding="utf-8")
+    # newline="\n": see build_claude_adapter.py — the default rewrites every
+    # line on Windows.
+    OUTPUT.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"Generated: {OUTPUT}")
 
 
