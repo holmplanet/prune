@@ -121,7 +121,9 @@ def main() -> None:
         return
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(rendered, encoding="utf-8")
+    # newline="\n": the default translates to os.linesep, so a Windows run
+    # rewrote every line and turned a 4-line policy edit into a 454-line diff.
+    OUTPUT.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"Generated: {OUTPUT}")
 
 

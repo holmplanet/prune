@@ -112,10 +112,9 @@ precedence.
   when the boundary is real.
 - Remove duplication when a stable domain abstraction exists, but tolerate local duplication
   when an abstraction would couple unrelated domains.
-- Treat comments as explanations of intent, constraints, or non-obvious decisions. Do not use
-  comments to excuse unclear code.
-- Avoid comments by default. Add one only when the intent or constraint cannot be made clear
-  through names, structure, or tests.
+- Treat comments as explanations of intent, constraints, or non-obvious decisions, not excuses
+  for unclear code. Avoid them when names, structure, or tests suffice. Keep each to two lines;
+  put longer reasoning in the pull request or ticket, not both.
 - Use explicit error types or the repository's established error contract. Preserve useful
   context without exposing secrets.
 - Tests should be fast, independent, repeatable, and self-validating. Test observable behavior,
