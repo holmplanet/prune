@@ -144,6 +144,23 @@ Tables are opt-in:
 
 Keep the PR surface smaller than the internal ChangeSpec. Publish the conclusions a reviewer needs, not every planning field.
 
+## Shell-safe transport
+
+Treat PR bodies, review comments, commit messages, and other Markdown passed to a shell as data.
+
+- Never pass multiline Markdown through a shell command's `--body` argument. Use stdin or a body file so the shell cannot interpret backticks, `$()`, quotes, or newlines.
+- For GitHub CLI, pass multiline content with `--body-file` and a body-file path:
+
+  ```sh
+  gh pr edit 123 --body-file /path/to/pr-body.md
+  ```
+
+- Use `--body-file -` with a single-quoted heredoc only when the full command path is known to forward stdin unchanged. A command proxy may consume or rewrite stdin; use its explicit passthrough mode or a body-file path instead.
+- Do not escape newlines into literal `\n` text.
+- Run the repository's PR-body checker against the exact payload before submitting when one exists.
+- After creating or editing a PR, read the submitted body back and confirm headings, line breaks, and inline code rendered as intended.
+- Before executing a command, inspect arguments for accidental interpolation and secret exposure.
+
 # Completion Policy
 
 Every task ends with one primary status:

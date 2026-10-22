@@ -126,6 +126,10 @@ class PullRequestGuardrailTests(unittest.TestCase):
         body = "```\n" + "\n".join(f"## {section}" for section in REQUIRED_SECTIONS) + "\n```"
         self.assertEqual(missing_sections(body), list(REQUIRED_SECTIONS))
 
+    def test_literal_backslash_newlines_do_not_satisfy_sections(self):
+        body = r"\n".join(f"## {section}" for section in REQUIRED_SECTIONS)
+        self.assertEqual(missing_sections(body), list(REQUIRED_SECTIONS))
+
 
 class AdapterConformanceTests(unittest.TestCase):
     def test_protocol_cli_validates_example(self):
