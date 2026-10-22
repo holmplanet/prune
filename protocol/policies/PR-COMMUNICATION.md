@@ -23,6 +23,17 @@ Keep the PR surface smaller than the internal ChangeSpec. Publish the conclusion
 
 Treat PR bodies, review comments, commit messages, and other Markdown passed to a shell as data.
 
-- Never place Markdown containing backticks, `$()` expressions, or other shell metacharacters inside a double-quoted command argument.
-- Prefer a temporary body file with `--body-file`, a quoted heredoc, or stdin when sending multiline Markdown to GitHub or another external tool.
-- Before executing a command, inspect interpolated arguments for accidental command substitution and secret exposure.
+- Never pass multiline Markdown through a shell command's `--body` argument. Use stdin or a body file so the shell cannot interpret backticks, `$()`, quotes, or newlines.
+- For GitHub CLI, pass multiline content with `--body-file -` and a single-quoted heredoc delimiter:
+
+  ```sh
+  gh pr edit 123 --body-file - <<'PR_BODY'
+  ## Summary
+  - Preserve Markdown formatting and inline code such as `git diff --check`.
+  PR_BODY
+  ```
+
+- Keep the heredoc delimiter quoted. Do not escape newlines into literal `\n` text.
+- Run the repository's PR-body checker against the exact payload before submitting when one exists.
+- After creating or editing a PR, read the submitted body back and confirm headings, line breaks, and inline code rendered as intended.
+- Before executing a command, inspect arguments for accidental interpolation and secret exposure.
