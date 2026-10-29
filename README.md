@@ -193,6 +193,13 @@ checks and pull request expectations.
 
 Report security vulnerabilities privately. See [`SECURITY.md`](SECURITY.md).
 
+## Acknowledgements
+
+Two rules, the post-failure premise check in Bugfix Mode and the vacuous-test rule in the Code
+Quality Policy, are adapted from Robert C. Martin's
+[`ub-mode`](https://github.com/unclebob/ub-mode) ("Attack the Premise" and "Test Behavior, Not
+Implementation"). The wording here is our own.
+
 ## License
 
 Prune Protocol is available under the [MIT License](LICENSE).

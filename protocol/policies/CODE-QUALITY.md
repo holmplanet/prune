@@ -19,6 +19,8 @@ precedence.
   put longer reasoning in the pull request or ticket, not both.
 - Use explicit error types or the repository's established error contract. Preserve useful
   context without exposing secrets.
+- A test that would still pass if every function returned nothing verifies no behavior. Remove or
+  rewrite it.
 - Tests should be fast, independent, repeatable, and self-validating. Test observable behavior,
   failure paths, and important boundaries rather than implementation trivia.
 
