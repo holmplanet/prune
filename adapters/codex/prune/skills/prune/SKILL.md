@@ -117,6 +117,8 @@ precedence.
   put longer reasoning in the pull request or ticket, not both.
 - Use explicit error types or the repository's established error contract. Preserve useful
   context without exposing secrets.
+- A test that would still pass if every function returned nothing verifies no behavior. Remove or
+  rewrite it.
 - Tests should be fast, independent, repeatable, and self-validating. Test observable behavior,
   failure paths, and important boundaries rather than implementation trivia.
 
@@ -204,6 +206,8 @@ The response contract is represented by `CompletionSpec.response` when structure
 5. Make the narrowest complete change.
 6. Inspect the full diff and run applicable checks.
 7. Return a concise completion status.
+
+If two fixes that share one assumption fail the same check, state that assumption in one sentence and challenge it before a third attempt.
 
 Do not mix unrelated cleanup, broad refactors, new dependencies, or public API changes into a focused bug fix unless the ChangeSpec requires them.
 

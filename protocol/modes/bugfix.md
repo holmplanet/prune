@@ -8,4 +8,6 @@
 6. Inspect the full diff and run applicable checks.
 7. Return a concise completion status.
 
+If two fixes that share one assumption fail the same check, state that assumption in one sentence and challenge it before a third attempt.
+
 Do not mix unrelated cleanup, broad refactors, new dependencies, or public API changes into a focused bug fix unless the ChangeSpec requires them.
